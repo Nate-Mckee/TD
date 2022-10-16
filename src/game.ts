@@ -1,7 +1,10 @@
 import 'phaser';
+import Path from './Path';
+import Square from './Square';
 
 export default class Demo extends Phaser.Scene {
-    private square: Phaser.GameObjects.Rectangle & { body: Phaser.Physics.Arcade.Body };
+    path = null;
+    square = null;
 
     constructor() {
         super('demo');
@@ -13,38 +16,17 @@ export default class Demo extends Phaser.Scene {
     }
 
     create() {
+        const scene = this;
         const graphics = this.add.graphics();
-        const path = this.add.path(96, -32);
+        this.path = new Path();
+        this.path.create(scene, graphics);
 
-        path.lineTo(96, 164);
-        path.lineTo(480, 164);
-        path.lineTo(480, 632);
-
-        graphics.lineStyle(3, 0xffffff, 1);
-        path.draw(graphics);
-
-        this.square = this.add.rectangle(400, 400, 100, 100, 0xFFFFFF) as any;
-        this.physics.add.existing(this.square);
+        this.square = new Square();
+        this.square.create(scene, graphics);
     }
 
     update() {
-        const cursorKeys = this.input.keyboard.createCursorKeys();
-
-        if (cursorKeys.up.isDown) {
-            this.square.body.setVelocityY(-500);
-        } else if (cursorKeys.down.isDown) {
-            this.square.body.setVelocityY(500);
-        } else {
-            this.square.body.setVelocityY(0);
-        }
-
-        if (cursorKeys.right.isDown) {
-            this.square.body.setVelocityX(500);
-        } else if (cursorKeys.left.isDown) {
-            this.square.body.setVelocityX(-500);
-        } else {
-            this.square.body.setVelocityX(0);
-        }
+        this.square.update(this);
     }
 }
 
