@@ -1,38 +1,45 @@
 import 'phaser';
 
-export default class Demo extends Phaser.Scene
-{
-    constructor ()
-    {
+export default class Demo extends Phaser.Scene {
+    constructor() {
         super('demo');
     }
 
-    preload ()
-    {
-        this.load.image('logo', 'assets/phaser3-logo.png');
-        this.load.image('libs', 'assets/libs.png');
-        this.load.glsl('bundle', 'assets/plasma-bundle.glsl.js');
-        this.load.glsl('stars', 'assets/starfields.glsl.js');
+    preload() {
+        this.load.image('boat', 'assets/boat/1.png');
+        this.load.image('boat2', 'assets/boat/2.png');
     }
 
-    create ()
-    {
-        this.add.shader('RGB Shift Field', 0, 0, 800, 600).setOrigin(0);
+    create() {
+        var graphics = this.add.graphics();
+        var path = this.add.path(96, -32);
 
-        this.add.shader('Plasma', 0, 412, 800, 172).setOrigin(0);
+        path.lineTo(96, 164);
+        path.lineTo(480, 164);
+        path.lineTo(480, 632);
 
-        this.add.image(400, 300, 'libs');
+        graphics.lineStyle(3, 0xffffff, 1);
+        path.draw(graphics);
 
-        const logo = this.add.image(400, 70, 'logo');
 
-        this.tweens.add({
-            targets: logo,
-            y: 350,
-            duration: 1500,
-            ease: 'Sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
+
+
+        // this.add.shader('RGB Shift Field', 0, 0, 800, 600).setOrigin(0);
+
+        // this.add.shader('Plasma', 0, 412, 800, 172).setOrigin(0);
+
+        // this.add.image(400, 300, 'libs');
+
+        // const logo = this.add.image(400, 70, 'logo');
+
+        // this.tweens.add({
+        //     targets: logo,
+        //     y: 350,
+        //     duration: 1500,
+        //     ease: 'Sine.inOut',
+        //     yoyo: true,
+        //     repeat: -1
+        // })
     }
 }
 
