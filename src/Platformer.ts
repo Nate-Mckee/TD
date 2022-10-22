@@ -13,6 +13,7 @@ export default class Platformer extends Phaser.Scene {
     this.load.image("ground", "assets/platform.png");
     this.load.image("star", "assets/star.png");
     this.load.image("bomb", "assets/bomb.png");
+
     this.load.spritesheet("dude", "assets/dude.png", {
       frameWidth: 32,
       frameHeight: 48,
@@ -21,14 +22,38 @@ export default class Platformer extends Phaser.Scene {
 
   create() {
     this.add.image(400, 300, "sky");
-    this.add.image(400, 300, "star");
 
     const platforms = this.createPlatforms();
     this.player = this.createPlayer();
+    const stars = this.createStars();
 
     this.physics.add.collider(this.player, platforms);
+    this.physics.add.collider(stars, platforms);
+
+    this.physics.add.overlap(this.player, stars, this.collectStar, null, this);
 
     this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  collectStar(
+    player: Phaser.Physics.Arcade.Sprite,
+    star: Phaser.Physics.Arcade.Sprite
+  ) {
+    star.disableBody(true, true);
+  }
+
+  createStars() {
+    const stars = this.physics.add.group({
+      key: "star",
+      repeat: 11,
+      setXY: { x: 12, y: 0, stepX: 70 },
+    });
+
+    stars.children.iterate((child: Phaser.Physics.Arcade.Sprite) => {
+      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    });
+
+    return stars;
   }
 
   createPlatforms() {
