@@ -1,13 +1,11 @@
 const formatScore = (score) => `Score: ${score}`;
 const style = { fontSize: "32px", fill: "#000" };
-const initialX = 16;
-const initialY = 16;
 
 class ScoreLabel extends Phaser.GameObjects.Text {
   private score: Number = 0;
 
-  constructor(scene) {
-    super(scene, initialX, initialY, formatScore(0), style);
+  constructor(scene, x, y) {
+    super(scene, x, y, formatScore(0), style);
     this.score = 0;
     scene.add.existing(this);
   }

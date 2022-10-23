@@ -2,13 +2,14 @@ import "phaser";
 import ScoreLabel from "./ScoreLabel";
 import BombSpawner from "./BombSpawner";
 import Player from "./Player";
+import StarGroup from "./StarGroup";
 
 export default class Platformer extends Phaser.Scene {
   private player?: Player = null;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys = null;
   private scoreLabel: ScoreLabel = null;
   private bombSpawner: BombSpawner = null;
-  private stars: Phaser.Physics.Arcade.Group = null;
+  private stars: StarGroup = null;
   private gameOver = false;
 
   constructor() {
@@ -28,11 +29,19 @@ export default class Platformer extends Phaser.Scene {
   }
 
   create() {
+    this.cursors = this.input.keyboard.createCursorKeys();
     this.add.image(400, 300, "sky");
 
+    //TODO: Should Platforms be it's own thing?  or is this like the sky (not worth it)?
     const platforms = this.createPlatforms();
-    this.player = new Player(this, 100, 450, "dude");
-    this.stars = this.createStars();
+    this.player = new Player(this, 100, 450, "dude", this.cursors);
+    this.stars = new StarGroup(this, {
+      key: "star",
+      repeat: 11,
+      setXY: { x: 12, y: 0, stepX: 70 },
+    });
+
+    //TODO: Make this a proper group via inheritance.
     this.bombSpawner = new BombSpawner(this, "bomb");
     const bombsGroup = this.bombSpawner.group;
 
@@ -55,14 +64,12 @@ export default class Platformer extends Phaser.Scene {
       this
     );
 
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.scoreLabel = new ScoreLabel(this);
+    this.scoreLabel = new ScoreLabel(this, 16, 16);
   }
 
   hitBomb() {
     this.physics.pause();
-    this.player.setTint(0xff0000);
-    this.player.anims.play("turn");
+    this.player.die();
     this.gameOver = true;
   }
   collectStar(
@@ -79,20 +86,6 @@ export default class Platformer extends Phaser.Scene {
     this.bombSpawner.spawn(player.x);
   }
 
-  createStars() {
-    const stars = this.physics.add.group({
-      key: "star",
-      repeat: 11,
-      setXY: { x: 12, y: 0, stepX: 70 },
-    });
-
-    stars.children.iterate((child: Phaser.Physics.Arcade.Sprite) => {
-      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-    });
-
-    return stars;
-  }
-
   createPlatforms() {
     const platforms = this.physics.add.staticGroup();
 
@@ -104,55 +97,9 @@ export default class Platformer extends Phaser.Scene {
     return platforms;
   }
 
-  createPlayer() {
-    const player = this.physics.add.sprite(100, 450, "dude");
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
-
-    this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("dude", {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "turn",
-      frames: [{ key: "dude", frame: 4 }],
-      frameRate: 20,
-    });
-
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("dude", {
-        start: 5,
-        end: 8,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    return player;
-  }
-
   update() {
     if (this.gameOver) return;
 
-    if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-160);
-      this.player.anims.play("left", true);
-    } else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(160);
-      this.player.anims.play("right", true);
-    } else {
-      this.player.setVelocityX(0);
-      this.player.anims.playReverse("turn");
-    }
-    if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
-    }
+    this.player.update();
   }
 }
