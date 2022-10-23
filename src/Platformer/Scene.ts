@@ -56,7 +56,7 @@ export default class Platformer extends Phaser.Scene {
     );
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.scoreLabel = this.createScoreLabel(16, 16, 0);
+    this.scoreLabel = new ScoreLabel(this);
   }
 
   hitBomb() {
@@ -77,15 +77,6 @@ export default class Platformer extends Phaser.Scene {
       });
     }
     this.bombSpawner.spawn(player.x);
-  }
-
-  createScoreLabel(x, y, score) {
-    const style = { fontSize: "32px", fill: "#000" };
-    const label = new ScoreLabel(this, x, y, score, style);
-
-    this.add.existing(label);
-
-    return label;
   }
 
   createStars() {
