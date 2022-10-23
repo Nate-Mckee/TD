@@ -1,17 +1,21 @@
 import "phaser";
 
+const DUDE = "dude";
 export default class Player extends Phaser.Physics.Arcade.Sprite {
-  private key: string = null;
+  static preload(scene: Phaser.Scene) {
+    scene.load.spritesheet(DUDE, "assets/dude.png", {
+      frameWidth: 32,
+      frameHeight: 48,
+    });
+  }
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys = null;
   constructor(
     scene: Phaser.Scene,
     x: number,
     y: number,
-    key: string,
     cursors: Phaser.Types.Input.Keyboard.CursorKeys
   ) {
-    super(scene, x, y, key);
-    this.key = key;
+    super(scene, x, y, DUDE);
     this.cursors = cursors;
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -44,7 +48,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private createAnimations() {
     this.scene.anims.create({
       key: "left",
-      frames: this.scene.anims.generateFrameNumbers(this.key, {
+      frames: this.scene.anims.generateFrameNumbers(DUDE, {
         start: 0,
         end: 3,
       }),
@@ -54,13 +58,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.scene.anims.create({
       key: "turn",
-      frames: [{ key: this.key, frame: 4 }],
+      frames: [{ key: DUDE, frame: 4 }],
       frameRate: 20,
     });
 
     this.scene.anims.create({
       key: "right",
-      frames: this.scene.anims.generateFrameNumbers(this.key, {
+      frames: this.scene.anims.generateFrameNumbers(DUDE, {
         start: 5,
         end: 8,
       }),
