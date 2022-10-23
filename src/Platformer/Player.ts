@@ -41,7 +41,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.anims.play("turn");
   }
 
-  createAnimations() {
+  private createAnimations() {
     this.scene.anims.create({
       key: "left",
       frames: this.scene.anims.generateFrameNumbers(this.key, {

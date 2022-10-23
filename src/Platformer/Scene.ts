@@ -3,6 +3,7 @@ import ScoreLabel from "./ScoreLabel";
 import BombSpawner from "./BombSpawner";
 import Player from "./Player";
 import StarGroup from "./StarGroup";
+import Platforms from "./Platforms";
 
 export default class Platformer extends Phaser.Scene {
   private player?: Player = null;
@@ -10,6 +11,7 @@ export default class Platformer extends Phaser.Scene {
   private scoreLabel: ScoreLabel = null;
   private bombSpawner: BombSpawner = null;
   private stars: StarGroup = null;
+  private platforms: Platforms = null;
   private gameOver = false;
 
   constructor() {
@@ -32,8 +34,7 @@ export default class Platformer extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.add.image(400, 300, "sky");
 
-    //TODO: Should Platforms be it's own thing?  or is this like the sky (not worth it)?
-    const platforms = this.createPlatforms();
+    this.platforms = new Platforms(this);
     this.player = new Player(this, 100, 450, "dude", this.cursors);
     this.stars = new StarGroup(this, {
       key: "star",
@@ -45,9 +46,9 @@ export default class Platformer extends Phaser.Scene {
     this.bombSpawner = new BombSpawner(this, "bomb");
     const bombsGroup = this.bombSpawner.group;
 
-    this.physics.add.collider(this.player, platforms);
-    this.physics.add.collider(this.stars, platforms);
-    this.physics.add.collider(bombsGroup, platforms);
+    this.physics.add.collider(this.player, this.platforms);
+    this.physics.add.collider(this.stars, this.platforms);
+    this.physics.add.collider(bombsGroup, this.platforms);
     this.physics.add.collider(
       this.player,
       bombsGroup,
@@ -84,17 +85,6 @@ export default class Platformer extends Phaser.Scene {
       });
     }
     this.bombSpawner.spawn(player.x);
-  }
-
-  createPlatforms() {
-    const platforms = this.physics.add.staticGroup();
-
-    platforms.create(400, 568, "ground").setScale(2).refreshBody();
-    platforms.create(600, 400, "ground");
-    platforms.create(50, 250, "ground");
-    platforms.create(750, 220, "ground");
-
-    return platforms;
   }
 
   update() {
