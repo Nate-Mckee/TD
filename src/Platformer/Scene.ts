@@ -1,9 +1,10 @@
 import "phaser";
 import ScoreLabel from "./ScoreLabel";
 import BombSpawner from "./BombSpawner";
+import Player from "./Player";
 
 export default class Platformer extends Phaser.Scene {
-  private player?: Phaser.Physics.Arcade.Sprite = null;
+  private player?: Player = null;
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys = null;
   private scoreLabel: ScoreLabel = null;
   private bombSpawner: BombSpawner = null;
@@ -30,7 +31,7 @@ export default class Platformer extends Phaser.Scene {
     this.add.image(400, 300, "sky");
 
     const platforms = this.createPlatforms();
-    this.player = this.createPlayer();
+    this.player = new Player(this, 100, 450, "dude");
     this.stars = this.createStars();
     this.bombSpawner = new BombSpawner(this, "bomb");
     const bombsGroup = this.bombSpawner.group;
