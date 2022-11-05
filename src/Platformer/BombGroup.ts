@@ -34,8 +34,8 @@ export default class BombGroup extends Phaser.Physics.Arcade.Group {
         );
         explosion.setScale(2);
         explosion.anims.play("explode");
+        explosion.anims.hideOnComplete = true;
         finishedBomb.disableBody(true, true);
-        finishedBomb.anims.stop();
       },
       [bomb]
     );
