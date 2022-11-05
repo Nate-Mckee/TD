@@ -21,11 +21,11 @@ export default class BombGroup extends Phaser.Physics.Arcade.Group {
         ? Phaser.Math.Between(400, 800)
         : Phaser.Math.Between(0, 400);
     const bomb: Phaser.Physics.Arcade.Sprite = this.create(x, 16, BOMB);
-    bomb.setBounce(1);
+    bomb.setBounce(Phaser.Math.FloatBetween(0.5, 1.0));
     bomb.setCollideWorldBounds(true);
     bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
     this.scene.time.delayedCall(
-      2500,
+      Phaser.Math.Between(2000, 3000),
       (finishedBomb: Phaser.Physics.Arcade.Sprite) => {
         const explosion = this.scene.add.sprite(
           finishedBomb.body.x,
@@ -46,9 +46,9 @@ export default class BombGroup extends Phaser.Physics.Arcade.Group {
       key: "explode",
       frames: this.scene.anims.generateFrameNumbers(EXPLOSION, {
         start: 0,
-        end: 29,
+        end: 30,
       }),
-      frameRate: 10,
+      frameRate: 80,
       repeat: 0,
     });
   }
